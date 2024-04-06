@@ -8,10 +8,8 @@ cc.Class({
         // 
         if (other.node.name === 'enemy') {
             // 
-            // this.schedule(() => {
-                // thu đạn về node pool
-                self.node.destroy();
-            // }, 0.00005);
+            // thu đạn về node pool
+            self.node.destroy();
         }
     },
 
@@ -26,6 +24,11 @@ cc.Class({
     update (dt) {
         // when switch to new level
         if (cc.find("Levels").getComponent("Levels").isPassLevel) {
+            this.node.destroy();
+        }
+
+        // when pass the top edge of screen
+        if (this.node.y > cc.winSize.height) {
             this.node.destroy();
         }
     },

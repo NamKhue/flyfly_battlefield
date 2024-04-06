@@ -46,7 +46,7 @@ cc.Class({
             // if (randomChoosingTimeToRenderItem % 7 === 0 && randomChoosingTimeToRenderItem % 4 === 0) {
             if (randomChoosingTimeToRenderItem % 7 === 0) {
                 // should random from list of prefabs
-                var randomIndexInItemsArray = Math.floor(Math.random() * this.itemsPrefab.length);
+                let randomIndexInItemsArray = Math.floor(Math.random() * this.itemsPrefab.length);
 
                 //
                 if (!playerNodeFile.existedTypeOfItems[randomIndexInItemsArray]) {
@@ -88,7 +88,7 @@ cc.Class({
             explosion = cc.instantiate(this.explosionPrefab);
         }
         // 
-        var indexChoosingHowToExplode = 0;
+        let indexChoosingHowToExplode = 0;
         if (isDead) {
             indexChoosingHowToExplode = 1;
         }
@@ -136,7 +136,7 @@ cc.Class({
                 this.eachEnemyHitCount++;
 
                 // số viên đạn va vào quái mà có thể giết quái - enemy
-                if (this.eachEnemyHitCount < 2) {
+                if (this.eachEnemyHitCount < 3) {
                     // 
                     this.effectExplosion(false);
                 } 
@@ -163,7 +163,7 @@ cc.Class({
 
     onLoad() {
         //
-        var manager = cc.director.getCollisionManager();
+        let manager = cc.director.getCollisionManager();
         manager.enabled = true;
 
         // // Enabled draw collider

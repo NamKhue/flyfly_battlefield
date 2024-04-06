@@ -18,6 +18,8 @@ cc.Class({
         this.killedEnemyTotal = this.rowTotal * this.colTotal * this.typeOfEnemy;
         this.killedEnemyCount = 0;
 
+        this.enemySpeed = 30;
+
         this.enemyPool = cc.find("Levels").getComponent("Levels").enemyPool;
     },
 

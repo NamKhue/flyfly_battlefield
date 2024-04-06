@@ -7,9 +7,6 @@ cc.Class({
         loseBloodBG: cc.Node,
         textDragToMove: cc.Node,
 
-        // tốc độ di chuyển của background
-        backGrSpeed: 50,
-
         mainAudio: {
             default: null,
             type: cc.AudioClip
@@ -19,7 +16,7 @@ cc.Class({
     moveBackground(dt) {
         // 
         if (!this.gameOver) {
-            var distance = this.backGrSpeed * dt;
+            let distance = this.backGrSpeed * dt;
 
             // di chuyển cả 2 backgr
             this.backGr_1.y -= distance;
@@ -39,14 +36,14 @@ cc.Class({
 
     setPositionForBackGround() {
         // size thiết bị hiện tại
-        var screenSize = cc.winSize;
+        let screenSize = cc.winSize;
 
         // size backgr
-        var backgroundSize = this.backGr_1.getContentSize();
+        let backgroundSize = this.backGr_1.getContentSize();
 
         // tính toán giá trị lặp
-        var repeatX = Math.ceil(screenSize.width / backgroundSize.width);
-        var repeatY = Math.ceil(screenSize.height / backgroundSize.height);
+        let repeatX = Math.ceil(screenSize.width / backgroundSize.width);
+        let repeatY = Math.ceil(screenSize.height / backgroundSize.height);
 
         // đặt giá trị scale cho backgr
         this.backGr_1.setScale(repeatX, repeatY);
@@ -77,13 +74,15 @@ cc.Class({
 
     introGame() {
         // 
+        let posX = 0;
+        let posY = -(Math.ceil(cc.winSize.height * 1 / 3) + 50);
+        // 
         cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = false;
         // 
-        this.textDragToMove.setPosition(cc.v2(0, -280));
+        this.textDragToMove.setPosition(cc.v2(posX, posY));
         cc.find("Canvas").getComponent("MainScene").textDragToMove.active = true;
         // 
         // cc.audioEngine.playEffect(this.mainAudio, true);
-
         const playingGameSound = cc.audioEngine.playEffect(this.mainAudio, false);
         cc.audioEngine.setVolume(playingGameSound, 0.5);
     },
@@ -91,6 +90,8 @@ cc.Class({
     onLoad() {
         // 
         this.makeResponsive();
+        // tốc độ di chuyển của background
+        this.backGrSpeed = 50;
         //
         this.gameOver = false;
         this.level = 1;
@@ -103,20 +104,13 @@ cc.Class({
     start() {
         //
         this.setPositionForBackGround();
-
-        // console.log(cc.find("Player").getComponent("Player").isClickingMouse)
     },
 
     update(dt) {
-        //
-        if (this.gameOver) {
-            const playingGameSound = cc.audioEngine.playEffect(this.mainAudio, false);
-            cc.audioEngine.setVolume(playingGameSound, 0);
-        }
-        //
-        // if (cc.find("Player").getComponent("Player").isClickingMouse == true) {
-        //     console.log('vao day')
-        //     cc.find("Canvas").getComponent("MainScene").textDragToMove.active = false;
+        // //
+        // if (this.gameOver) {
+        //     const playingGameSound = cc.audioEngine.playEffect(this.mainAudio, false);
+        //     cc.audioEngine.setVolume(playingGameSound, 0);
         // }
     },
 });

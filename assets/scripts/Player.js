@@ -2,17 +2,8 @@ cc.Class({
     extends: cc.Component,
 
     properties: {
-        emptyImagePlayer: {
-            default: null,
-            type: cc.Node
-        },
-
         bulletPrefabs: [cc.Prefab],
 
-        // bulletPrefab: {
-        //     default: null,
-        //     type: cc.Prefab
-        // },
         bulletAudio: {
             default: null,
             type: cc.AudioClip
@@ -50,7 +41,7 @@ cc.Class({
 
             // stop game or reduce HP
             // this.gameOver = true;
-            // this.collideEnemy = true;
+            this.collideEnemy = true;
         }
     },
 
@@ -138,7 +129,7 @@ cc.Class({
             let circleBullet = null;
 
             // choose type bullet
-            var type = 'circle'
+            let type = 'circle'
 
             if (this.circleBulletPool.size() > 0) {
                 circleBullet = this.circleBulletPool.get();
@@ -150,11 +141,11 @@ cc.Class({
             this.node.parent.addChild(circleBullet);
 
             // change pos for each bullet
-            var newPosition;
+            let newPosition;
             if (i == 0) { newPosition = cc.v2(this.node.position.x - 20, this.node.position.y + 45); }
             if (i == 1) { newPosition = cc.v2(this.node.position.x + 20, this.node.position.y + 45); }
             // 
-            var circleBulletScale = 0.25
+            let circleBulletScale = 0.25
             circleBullet.setScale(cc.v2(circleBulletScale, circleBulletScale));
             circleBullet.setPosition(newPosition);
 
@@ -184,7 +175,7 @@ cc.Class({
             let bullet = null;
 
             // choose type bullet
-            var type = 'circle'
+            let type = 'circle'
 
             if (this.bulletPool.size() > 0) {
                 bullet = this.bulletPool.get();
@@ -196,14 +187,14 @@ cc.Class({
             this.node.parent.addChild(bullet);
 
             // change pos for each bullet
-            var newPosition = cc.v2(this.node.position.x, this.node.position.y + 55);
+            let newPosition = cc.v2(this.node.position.x, this.node.position.y + 55);
             // if (i == 0) { newPosition = cc.v2(this.node.position.x - 25 + i * 8, this.node.position.y + 55); }
             if (i == 0 || i == 1 || i == 2) { newPosition = cc.v2(this.node.position.x - 20 + i * 5, this.node.position.y + 55); }
             // if (i == 3) { newPosition = cc.v2(this.node.position.x, this.node.position.y + 55); }
             if (i == 4 || i == 5 || i == 6) { newPosition = cc.v2(this.node.position.x - 5 + (i - 1) * 5, this.node.position.y + 55); }
             // if (i == 6) { newPosition = cc.v2(this.node.position.x - 15 + (i - 1) * 8, this.node.position.y + 55); }
             // 
-            var bulletScale = 0.9
+            let bulletScale = 0.9
             bullet.setScale(cc.v2(bulletScale, bulletScale));
             bullet.setPosition(newPosition);
 
@@ -251,7 +242,7 @@ cc.Class({
             let bullet = null;
 
             // choose type bullet
-            var type = 'circle'
+            let type = 'circle'
 
             if (this.bulletPool.size() > 0) {
                 bullet = this.bulletPool.get();
@@ -260,7 +251,7 @@ cc.Class({
             }
 
             // change pos for each bullet
-            var newPosition = cc.v2(this.node.position.x - 25 + i * 8, this.node.position.y + 50);
+            let newPosition = cc.v2(this.node.position.x - 25 + i * 8, this.node.position.y + 50);
             if (i == 1 || i == 2) { newPosition = cc.v2(this.node.position.x - 20 + i * 5, this.node.position.y + 55); }
             if (i == 3) { newPosition = cc.v2(this.node.position.x, this.node.position.y + 50); }
             if (i == 4 || i == 5) { newPosition = cc.v2(this.node.position.x - 5 + (i - 1) * 5, this.node.position.y + 55); }
@@ -299,7 +290,7 @@ cc.Class({
             let bullet = null;
 
             // choose type bullet
-            var type = 'circle'
+            let type = 'circle'
 
             if (this.bulletPool.size() > 0) {
                 bullet = this.bulletPool.get();
@@ -308,7 +299,7 @@ cc.Class({
             }
 
             // change pos for each bullet
-            var newPosition = cc.v2(this.node.position.x - 15 + i * 5, this.node.position.y + 55);
+            let newPosition = cc.v2(this.node.position.x - 15 + i * 5, this.node.position.y + 55);
             if (i == 2)
                 newPosition = cc.v2(this.node.position.x - 40 + i * 25, this.node.position.y + 55);
             else if (i == 3)
@@ -343,12 +334,12 @@ cc.Class({
         const animation = this.node.getComponent(cc.Animation);
 
         if (animation.getClips().length > 0) {
-            for (var i = 0; i < animation.getClips().length; i++) {
+            for (let i = 0; i < animation.getClips().length; i++) {
                 animation.removeClip(animation.getClips()[i], true);
             }
         }
 
-        var indexChoosingTypeOfPlayer = 0;
+        let indexChoosingTypeOfPlayer = 0;
         if (type == 'super') {
             indexChoosingTypeOfPlayer = 1;
 
@@ -366,12 +357,12 @@ cc.Class({
         animation.play(animationClip.name);
     },
 
-    initializePlayerPos(posX, posY) {
+    initializePlayerPos() {
         // 
-        this.node.setPosition(cc.v2(posX, posY - 500));
+        this.node.setPosition(cc.v2(this.posX, this.posY - 500));
 
         cc.tween(this.node)
-            .to(1, { position: cc.v2(posX, posY), easing: 'cubicOut' })
+            .to(1, { position: cc.v2(this.posX, this.posY), easing: 'cubicOut' })
             .start();
     },
 
@@ -405,7 +396,7 @@ cc.Class({
         // 
         this.createAnimationForPlayer('normal');
         //
-        this.initializePlayerPos(this.posX, this.posY);
+        this.initializePlayerPos();
         // 
         this.initializeBulletPool();
         // 
@@ -447,25 +438,6 @@ cc.Class({
     },
 
     update(dt) {
-        // test area
-        // setTimeout(() => {
-        //     this.upgradeGun[0] = true
-        // }, 5000);
-
-        // setTimeout(() => {
-        //     this.createAnimationForPlayer('super');
-        //     this.upgradeGun[1] = true
-        // }, 5000);
-
-        // setTimeout(() => {
-        //     this.createAnimationForPlayer('normal');
-        //     this.upgradeGun[0] = false
-        //     this.upgradeGun[1] = false
-        // }, 5000);
-
-
-
-
         // shoot cooldown
         if (this.isClickingMouse) {
             this.shootCooldownCount += dt;
@@ -514,8 +486,8 @@ cc.Class({
             // if (this.collideEnemyDelayTimeCount < this.collideEnemyDelayTime) this.collideEnemyDelayTimeCount += dt;
             // console.log(this.collideEnemyDelayTimeCount * 1000);
             // // if ()
-            // var oldWidth = this.node.width;
-            // var oldHeight = this.node.height;
+            // let oldWidth = this.node.width;
+            // let oldHeight = this.node.height;
 
             // const animationClip = this.playerAnimationClip[1];
             // const animation = this.node.getComponent(cc.Animation);

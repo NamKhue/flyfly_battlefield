@@ -51,7 +51,7 @@ cc.Class({
     },
 
     checkForChangingLevel(currentLevel, currentNodeFile) {
-
+        //
         if (
             currentNodeFile.killedEnemyCount === currentNodeFile.killedEnemyTotal
             // last enemies pass edge of screen
@@ -81,6 +81,7 @@ cc.Class({
     },
 
     level_1(currentNodeFile) {
+        //
         for (let i = 1; i <= currentNodeFile.killedEnemyTotal; i++) {
             let enemy = null;
 
@@ -90,10 +91,10 @@ cc.Class({
                 enemy = cc.instantiate(this.enemyPrefab);
             }
 
-            var index = 0;
-            var x = currentNodeFile.node.position.x;
-            var y = currentNodeFile.node.position.y;
-            var angle = 0;
+            let index = 0;
+            let x = currentNodeFile.node.position.x;
+            let y = currentNodeFile.node.position.y;
+            let angle = 0;
 
             if (i == 1) {
                 index = 9;
@@ -177,13 +178,14 @@ cc.Class({
     },
 
     level_2(currentNodeFile) {
+        //
         const screenHeight = cc.winSize.height;
 
         for (let i = 0; i < currentNodeFile.typeOfEnemy; i++) {
-            var index = i;
+            let index = i;
 
             for (let j = 1; j <= currentNodeFile.rowTotal; j++) {
-                var y = screenHeight / 2 + 20 * ((i - 1) * currentNodeFile.rowTotal + j - 1);
+                let y = screenHeight / 2 + 20 * ((i - 1) * currentNodeFile.rowTotal + j - 1);
 
                 for (let k = 1; k <= currentNodeFile.colTotal; k++) {
                     if (this.enemyPool.size() > 0) {
@@ -192,8 +194,8 @@ cc.Class({
                         enemy = cc.instantiate(this.enemyPrefab);
                     }
 
-                    // var x = (k - 2) * 30 - 60;
-                    var x = (k - 2) * 10;
+                    // let x = (k - 2) * 30 - 60;
+                    let x = (k - 2) * 10;
 
                     if (i == currentNodeFile.typeOfEnemy - 1) {
                         enemy.setScale(0.25);
@@ -207,21 +209,22 @@ cc.Class({
                     animation.addClip(animationClip, animationClip.name);
                     animation.play(animationClip.name);
 
-                    // animation.speed = 0.08;
-
                     enemy.setPosition(x, y);
-                    // enemy.angle = 0;
 
                     cc.find("Canvas").addChild(enemy);
 
                     // vận tốc
-                    const speed = currentNodeFile.enemySpeed;
+                    const speed = this.enemySpeed;
                     const duration = (y + 10) / speed;
 
                     const moveAction = cc.sequence(
-                        cc.moveTo(duration, cc.v2(x, -y - 500)),
+                        cc.moveTo(duration, cc.v2(x, -cc.winSize.height + 300)),
                         cc.callFunc(() => {
-                            // this.enemyPool.put(enemy);
+                            this.enemyPool.put(enemy);
+
+                            // if (j == currentNodeFile.rowTotal) {
+                            //     console.log('last ones')
+                            // }
                         })
                     );
 
@@ -254,6 +257,8 @@ cc.Class({
     onLoad () {
         // 
         this.initializeEnemyPool();
+        //
+        this.enemySpeed = 50;
         // 
         this.isPassLevel = false;
     },
