@@ -7,8 +7,7 @@ cc.Class({
     onCollisionEnter(other, self) {
         // 
         if (other.node.name === 'enemy') {
-            // 
-            // thu đạn về node pool
+            // return bullet to node pool
             self.node.destroy();
         }
     },

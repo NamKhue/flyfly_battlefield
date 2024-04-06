@@ -50,37 +50,42 @@ cc.Class({
         cc.find("Canvas").on(cc.Node.EventType.TOUCH_MOVE, playerNode.getComponent("Player").onMouseMove, playerNode.getComponent("Player"));
     },
 
-    checkForChangingLevel(currentLevel, currentNodeFile) {
+    passLevel(currentLevel) {
         //
-        if (
-            currentNodeFile.killedEnemyCount === currentNodeFile.killedEnemyTotal
-            // last enemies pass edge of screen
-            // need a boolean variable
-        ) {
-            //
-            this.whenPassLevel();
-            //
-            console.log(`xong level ${currentLevel}`);
-            currentLevel += 1;
-            cc.find("Canvas").getComponent("MainScene").level += 1;
-            //
-            if (currentLevel < 3) {
-                setTimeout(() => {
-                    //
-                    this.prepareForNewLevel();
-                    //
-                    this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
-                    //
-                    cc.find("Canvas").getComponent("MainScene").gameOver = false;
-                }, 3000);
-            }
-            else {
-                cc.find("Canvas").getComponent("MainScene").gameOver = true;
-            }
+        this.whenPassLevel();
+        //
+        console.log(`xong level ${currentLevel}`);
+        currentLevel += 1;
+        cc.find("Canvas").getComponent("MainScene").level += 1;
+        //
+        if (currentLevel < cc.find("Canvas").getComponent("MainScene").levelTotal + 1) {
+            setTimeout(() => {
+                //
+                this.prepareForNewLevel();
+                //
+                this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
+                //
+                cc.find("Canvas").getComponent("MainScene").gameOver = false;
+            }, 3000);
+        }
+        else {
+            cc.find("Canvas").getComponent("MainScene").gameOver = true;
         }
     },
 
-    level_1(currentNodeFile) {
+    checkForChangingLevel(currentLevel, currentNodeFile) {
+        //
+        if (
+            // kill all enemies in current level
+            currentNodeFile.killedEnemyCount === currentNodeFile.killedEnemyTotal
+            // or when the last enemy pass edge of screen
+            || this.isPassLevel
+        ) {
+            this.passLevel(currentLevel);
+        }
+    },
+
+    level_1(currentNodeFile) {        
         //
         for (let i = 1; i <= currentNodeFile.killedEnemyTotal; i++) {
             let enemy = null;
@@ -164,8 +169,6 @@ cc.Class({
             const animationClip = enemy.getComponent("Enemy").enemyAnimationClip[index];
             const animation = enemy.getComponent(cc.Animation);
 
-            // console.log(enemy.getComponent("Enemy").enemyAnimationClip[0])
-
             // set clip cho animation clip của prefab enemy
             animation.addClip(animationClip, animationClip.name);
             animation.play(animationClip.name);
@@ -221,10 +224,6 @@ cc.Class({
                         cc.moveTo(duration, cc.v2(x, -cc.winSize.height + 300)),
                         cc.callFunc(() => {
                             this.enemyPool.put(enemy);
-
-                            // if (j == currentNodeFile.rowTotal) {
-                            //     console.log('last ones')
-                            // }
                         })
                     );
 
@@ -252,6 +251,33 @@ cc.Class({
         }
     },
 
+    checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt) {
+        this.checkCooldownCount += dt;
+        
+        if (!this.isPassLevel && this.checkCooldownCount >= this.checkCooldown) {
+            // 
+            this.checkCooldownCount = 0;
+            // 
+            let index = cc.find("Canvas")._children.length - 1;
+            while (
+                index >= 0 
+                && (cc.find("Canvas")._children[index] != null && cc.find("Canvas")._children[index] != undefined)
+                && cc.find("Canvas")._children[index].name != 'enemy'
+            ) {
+                index--;
+            }
+            console.log('last one', cc.find("Canvas")._children[index])
+            console.log('pos y', cc.find("Canvas")._children[index].y)
+
+            if (cc.find("Canvas")._children[index].y < -300) {
+                this.isPassLevel = true;
+
+                const currentLevel = cc.find("Canvas").getComponent("MainScene").level;
+                this.passLevel(currentLevel);
+            }
+        }
+    },
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -261,6 +287,10 @@ cc.Class({
         this.enemySpeed = 50;
         // 
         this.isPassLevel = false;
+        
+        // khoảng thời gian cooldown giữa các lần kiểm tra vị trí của con quái cuối cùng
+        this.checkCooldown = 3;
+        this.checkCooldownCount = 0;
     },
 
     start () {
@@ -270,4 +300,9 @@ cc.Class({
             cc.find("Levels")._children[0].getComponent(`Level 1`)
         );
     },
+
+    update(dt) {
+        // when last enemy pass through bottom edge of screen
+        this.checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt);
+    }
 });

@@ -137,7 +137,7 @@ cc.Class({
                 circleBullet = cc.instantiate(this.bulletPrefabs[1]);
             }
 
-            // thêm đạn vào mainscene
+            // add bullet to canvas node
             this.node.parent.addChild(circleBullet);
 
             // change pos for each bullet
@@ -227,7 +227,7 @@ cc.Class({
             const moveAction = cc.sequence(
                 cc.moveBy(duration, cc.v2(0, screenSize.height)),
                 cc.callFunc(() => {
-                    // thu lại đạn cho vào trong node pool
+                    // return bullet to node pool
                     this.bulletPool.put(bullet);
                 })
             );
@@ -273,7 +273,7 @@ cc.Class({
             const moveAction = cc.sequence(
                 cc.moveBy(duration, cc.v2(0, screenSize.height)),
                 cc.callFunc(() => {
-                    // thu lại đạn cho vào trong node pool
+                    // return bullet to node pool
                     this.bulletPool.put(bullet);
                 })
             );
@@ -320,7 +320,7 @@ cc.Class({
             const moveAction = cc.sequence(
                 cc.moveBy(duration, cc.v2(0, screenSize.height)),
                 cc.callFunc(() => {
-                    // thu lại đạn cho vào trong node pool
+                    // return bullet to node pool
                     this.bulletPool.put(bullet);
                 })
             );

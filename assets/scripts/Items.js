@@ -130,6 +130,5 @@ cc.Class({
         if (cc.find("Levels").getComponent("Levels").isPassLevel) {
             this.node.destroy();
         }
-
     },
 });

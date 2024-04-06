@@ -95,6 +95,7 @@ cc.Class({
         //
         this.gameOver = false;
         this.level = 1;
+        this.levelTotal = 2;
         //
         this.schedule(this.moveBackground, 0);
         //
