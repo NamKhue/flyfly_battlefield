@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "27f84b62-6405-4c0f-849d-e653163448b7",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 128,
+  "height": 128,
+  "platformSettings": {},
+  "subMetas": {
+    "Supper-Tarragon_Tier4_Turn2": {
+      "ver": "1.0.6",
+      "uuid": "cf2b42b3-70a2-48c8-af54-52d2461edf93",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "27f84b62-6405-4c0f-849d-e653163448b7",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": -3,
+      "trimX": 0,
+      "trimY": 7,
+      "width": 128,
+      "height": 120,
+      "rawWidth": 128,
+      "rawHeight": 128,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}

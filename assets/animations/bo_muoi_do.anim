@@ -1,0 +1,49 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "bo_muoi_do",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.08333333333333333,
+  "sample": 60,
+  "speed": 0.2,
+  "wrapMode": 2,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "aa4ec085-f527-4a45-a5f4-3c3f3aa1e049"
+            }
+          },
+          {
+            "frame": 0.016666666666666666,
+            "value": {
+              "__uuid__": "320e649b-7f19-4b93-bc1b-5884d24461b6"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "87b4cf36-9936-490a-8ce8-988d645ff55b"
+            }
+          },
+          {
+            "frame": 0.05,
+            "value": {
+              "__uuid__": "cb3ef2d0-09c4-42f7-8585-7ea412ffce97"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "3f69317c-1353-4d41-b974-baa50adf0f14"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}

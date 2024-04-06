@@ -1,0 +1,49 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "bo_ong_vang",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.08333333333333333,
+  "sample": 60,
+  "speed": 0.2,
+  "wrapMode": 2,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "a3a2b1f1-051c-497d-ae51-ca1be3a880f2"
+            }
+          },
+          {
+            "frame": 0.016666666666666666,
+            "value": {
+              "__uuid__": "ffd2c852-9fee-49b9-8af0-c870f9f42f65"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "7e787d8f-4df1-459b-92d5-f4861e0b290a"
+            }
+          },
+          {
+            "frame": 0.05,
+            "value": {
+              "__uuid__": "ac4d945e-78ad-43b9-a818-d9eda01b6c0b"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "1b0548e3-efc6-4c43-845d-e383bc11c7f1"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}

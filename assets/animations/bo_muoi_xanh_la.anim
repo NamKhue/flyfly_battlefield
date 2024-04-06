@@ -1,0 +1,49 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "bo_muoi_xanh_la",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 0.08333333333333333,
+  "sample": 60,
+  "speed": 0.2,
+  "wrapMode": 2,
+  "curveData": {
+    "comps": {
+      "cc.Sprite": {
+        "spriteFrame": [
+          {
+            "frame": 0,
+            "value": {
+              "__uuid__": "4c67b7fc-e071-464b-9219-022e0bacdd3c"
+            }
+          },
+          {
+            "frame": 0.016666666666666666,
+            "value": {
+              "__uuid__": "e796dd56-a8ea-41b3-ab1d-5356143a43a2"
+            }
+          },
+          {
+            "frame": 0.03333333333333333,
+            "value": {
+              "__uuid__": "57045dae-22f7-4208-9487-099998b90b53"
+            }
+          },
+          {
+            "frame": 0.05,
+            "value": {
+              "__uuid__": "eab827ba-c0e7-45f2-8fda-a36a6433dbdf"
+            }
+          },
+          {
+            "frame": 0.06666666666666667,
+            "value": {
+              "__uuid__": "4af18593-90b9-4a6b-8b07-458d5765d0c6"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "events": []
+}

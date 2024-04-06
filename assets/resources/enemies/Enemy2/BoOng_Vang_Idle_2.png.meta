@@ -1,0 +1,38 @@
+{
+  "ver": "2.3.7",
+  "uuid": "e9291db3-032e-4df2-b81a-b46f84efa65b",
+  "importer": "texture",
+  "type": "sprite",
+  "wrapMode": "clamp",
+  "filterMode": "bilinear",
+  "premultiplyAlpha": false,
+  "genMipmaps": false,
+  "packable": true,
+  "width": 40,
+  "height": 42,
+  "platformSettings": {},
+  "subMetas": {
+    "BoOng_Vang_Idle_2": {
+      "ver": "1.0.6",
+      "uuid": "7e787d8f-4df1-459b-92d5-f4861e0b290a",
+      "importer": "sprite-frame",
+      "rawTextureUuid": "e9291db3-032e-4df2-b81a-b46f84efa65b",
+      "trimType": "auto",
+      "trimThreshold": 1,
+      "rotated": false,
+      "offsetX": 0,
+      "offsetY": 2.5,
+      "trimX": 0,
+      "trimY": 0,
+      "width": 40,
+      "height": 37,
+      "rawWidth": 40,
+      "rawHeight": 42,
+      "borderTop": 0,
+      "borderBottom": 0,
+      "borderLeft": 0,
+      "borderRight": 0,
+      "subMetas": {}
+    }
+  }
+}
