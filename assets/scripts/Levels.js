@@ -238,10 +238,7 @@ cc.Class({
     },
 
     moveToLevel(currentLevel, currentNodeFile) {
-
-        // console.log(currentNodeFile);
-        // console.log(currentNodeFile.killedEnemyTotal);
-
+        // 
         if (currentLevel == 1) {
             this.level_1(currentNodeFile);
         }
@@ -249,31 +246,38 @@ cc.Class({
         // if (currentLevel == 1) {
             this.level_2(currentNodeFile);
         }
+
+        // 
+        this.enemyTotal = currentNodeFile.killedEnemyTotal;
     },
 
     checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt) {
         this.checkCooldownCount += dt;
         
-        if (!this.isPassLevel && this.checkCooldownCount >= this.checkCooldown) {
+        if (
+            !this.isPassLevel
+            && this.checkCooldownCount >= this.checkCooldown
+        ) {
             // 
             this.checkCooldownCount = 0;
             // 
             let index = cc.find("Canvas")._children.length - 1;
-            while (
-                index >= 0 
-                && (cc.find("Canvas")._children[index] != null && cc.find("Canvas")._children[index] != undefined)
-                && cc.find("Canvas")._children[index].name != 'enemy'
-            ) {
-                index--;
-            }
-            console.log('last one', cc.find("Canvas")._children[index])
-            console.log('pos y', cc.find("Canvas")._children[index].y)
+            
+            if (this.enemyTotal > 0) {
+                while (cc.find("Canvas")._children[index].name != 'enemy') {
+                    index--;
+                }
 
-            if (cc.find("Canvas")._children[index].y < -300) {
-                this.isPassLevel = true;
+                // console.log('last one', cc.find("Canvas")._children[index])
+                // console.log('pos y', cc.find("Canvas")._children[index].y)
 
-                const currentLevel = cc.find("Canvas").getComponent("MainScene").level;
-                this.passLevel(currentLevel);
+                if (cc.find("Canvas")._children[index].y < -300) {
+                    //
+                    this.isPassLevel = true;
+                    //
+                    const currentLevel = cc.find("Canvas").getComponent("MainScene").level;
+                    this.passLevel(currentLevel);
+                }
             }
         }
     },
@@ -284,7 +288,7 @@ cc.Class({
         // 
         this.initializeEnemyPool();
         //
-        this.enemySpeed = 50;
+        this.enemySpeed = 250;
         // 
         this.isPassLevel = false;
         
