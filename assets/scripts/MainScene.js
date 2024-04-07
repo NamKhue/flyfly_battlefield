@@ -4,8 +4,11 @@ cc.Class({
     properties: {
         backGr_1: cc.Node,
         backGr_2: cc.Node,
+
         loseBloodBG: cc.Node,
         textDragToMove: cc.Node,
+
+        level_text: [cc.Node],
 
         mainAudio: {
             default: null,
@@ -95,7 +98,7 @@ cc.Class({
         //
         this.gameOver = false;
         this.level = 1;
-        this.levelTotal = 2;
+        this.levelTotal = 3;
         //
         this.schedule(this.moveBackground, 0);
         //

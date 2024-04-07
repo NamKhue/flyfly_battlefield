@@ -10,6 +10,11 @@ cc.Class({
             // return bullet to node pool
             self.node.destroy();
         }
+        // 
+        if (other.node.name === 'boss') {
+            // return bullet to node pool
+            self.node.destroy();
+        }
     },
 
     // LIFE-CYCLE CALLBACKS:

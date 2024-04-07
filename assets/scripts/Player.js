@@ -35,19 +35,10 @@ cc.Class({
         }
     },
 
-    onCollisionEnter(other, self) {
-        if (other.node.name === 'enemy') {
-            // console.log("va vao enemy");
-
-            // stop game or reduce HP
-            // this.gameOver = true;
-            this.collideEnemy = true;
-        }
-    },
-
     onMouseDown(event) {
         // bắt đầu chơi
-        if (cc.find("Canvas").getComponent("MainScene").level == 1 && !this.isStartGame) {
+        // if (cc.find("Canvas").getComponent("MainScene").level == 1 && !this.isStartGame) {
+        if (!this.isStartGame) {
             this.isStartGame = true;
         }
 
@@ -375,6 +366,23 @@ cc.Class({
         }
     },
 
+    onCollisionEnter(other, self) {
+        if (other.node.name === 'enemy') {
+            // console.log("va vao enemy");
+
+            // stop game or reduce HP
+            // this.gameOver = true;
+            this.collideEnemy = true;
+        }
+        if (other.node.name === 'boss') {
+            console.log("va vao boss");
+
+            // stop game or reduce HP
+            // this.gameOver = true;
+            this.collideEnemy = true;
+        }
+    },
+
     initializePlayer() {
         // // type of power
         // // bonus bullet -> increase number of bullet
@@ -390,7 +398,7 @@ cc.Class({
         // 
         this.node.setScale(cc.v2(0.5, 0.5));
         this.oldScaleX = this.node.scaleX;
-        // 
+        // default position for playing
         this.posX = 0;
         this.posY = -(Math.ceil(cc.winSize.height * 1 / 3) - 50);
         // 

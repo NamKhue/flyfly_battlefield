@@ -17,24 +17,42 @@ cc.Class({
         }
     },
 
+    displayTextNotifyForSwitchingToNewLevel(currentLevel) {
+        // console.log('vao day')
+        
+        // console.log('currentLevel', currentLevel)
+        // console.log('canvas node', cc.find("Canvas").getComponent("MainScene"))
+        // console.log('text list', cc.find("Canvas").getComponent("MainScene").level_text)
+        // console.log('text node', cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1])
+        // console.log('active', cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active)
+        
+        // text noti switch to new level
+        cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = true;
+    },
+
     whenPassLevel() {
         // 
         this.isPassLevel = true;
+
         // 
         // player
         const playerNode = cc.find("Canvas")._children[2];
+        const playerNodeFile = cc.find("Canvas")._children[2].getComponent("Player");
 
         // set pos
         cc.tween(playerNode)
-            .to(1, { position: cc.v2(playerNode.getComponent("Player").posX, playerNode.getComponent("Player").posY), easing: 'cubicOut' })
+            .to(1, { position: cc.v2(playerNodeFile.posX, playerNodeFile.posY), easing: 'cubicOut' })
             .start();
 
         // stop click/hold mouse event
-        playerNode.getComponent("Player").isClickingMouse = false;
+        playerNodeFile.isClickingMouse = false;
+        // 
+        playerNodeFile.isDisappearTextIntro = false;
+        playerNodeFile.isStartGame = false;
         
-        cc.find("Canvas").off(cc.Node.EventType.TOUCH_START, playerNode.getComponent("Player").onMouseDown, playerNode.getComponent("Player"));
-        cc.find("Canvas").off(cc.Node.EventType.TOUCH_END, playerNode.getComponent("Player").onMouseUp, playerNode.getComponent("Player"));
-        cc.find("Canvas").off(cc.Node.EventType.TOUCH_MOVE, playerNode.getComponent("Player").onMouseMove, playerNode.getComponent("Player"));
+        cc.find("Canvas").off(cc.Node.EventType.TOUCH_START, playerNodeFile.onMouseDown, playerNodeFile);
+        cc.find("Canvas").off(cc.Node.EventType.TOUCH_END, playerNodeFile.onMouseUp, playerNodeFile);
+        cc.find("Canvas").off(cc.Node.EventType.TOUCH_MOVE, playerNodeFile.onMouseMove, playerNodeFile);
     },
 
     prepareForNewLevel() {
@@ -52,11 +70,13 @@ cc.Class({
 
     passLevel(currentLevel) {
         //
-        this.whenPassLevel();
-        //
         console.log(`xong level ${currentLevel}`);
         currentLevel += 1;
         cc.find("Canvas").getComponent("MainScene").level += 1;
+        // 
+        this.displayTextNotifyForSwitchingToNewLevel(currentLevel);
+        //
+        this.whenPassLevel();
         //
         if (currentLevel < cc.find("Canvas").getComponent("MainScene").levelTotal + 1) {
             setTimeout(() => {
@@ -66,6 +86,8 @@ cc.Class({
                 this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
                 //
                 cc.find("Canvas").getComponent("MainScene").gameOver = false;
+                // 
+                cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = false;
             }, 3000);
         }
         else {
@@ -85,7 +107,9 @@ cc.Class({
         }
     },
 
-    level_1(currentNodeFile) {        
+    level_1(currentNodeFile) {
+        // 
+        this.howManyBulletsCanKillEnemy = 3;
         //
         for (let i = 1; i <= currentNodeFile.killedEnemyTotal; i++) {
             let enemy = null;
@@ -181,6 +205,8 @@ cc.Class({
     },
 
     level_2(currentNodeFile) {
+        // 
+        this.howManyBulletsCanKillEnemy = 2;
         //
         const screenHeight = cc.winSize.height;
 
@@ -197,14 +223,14 @@ cc.Class({
                         enemy = cc.instantiate(this.enemyPrefab);
                     }
 
-                    // let x = (k - 2) * 30 - 60;
-                    let x = (k - 2) * 10;
+                    let x = (k - 2) * 30 - 60;
+                    // let x = (k - 2) * 10;
 
                     if (i == currentNodeFile.typeOfEnemy - 1) {
                         enemy.setScale(0.25);
 
-                        // x = (k - 3) * 35 - 60;
-                        x = (k - 3) * 35 + 30;
+                        x = (k - 3) * 35 - 60;
+                        // x = (k - 3) * 35 + 30;
                     }
 
                     const animation = enemy.getComponent(cc.Animation);
@@ -237,6 +263,12 @@ cc.Class({
         }
     },
 
+    level_3(currentNodeFile) {
+        // currentNodeFile.generateLevel();
+
+        cc.find("Canvas")._children[3].getComponent("Boss").generateLevel();
+    },
+
     moveToLevel(currentLevel, currentNodeFile) {
         // 
         if (currentLevel == 1) {
@@ -246,7 +278,10 @@ cc.Class({
         // if (currentLevel == 1) {
             this.level_2(currentNodeFile);
         }
-
+        else if (currentLevel == 3) {
+        // if (currentLevel == 1) {
+            this.level_3(currentNodeFile);
+        }
         // 
         this.enemyTotal = currentNodeFile.killedEnemyTotal;
     },
@@ -288,24 +323,43 @@ cc.Class({
         // 
         this.initializeEnemyPool();
         //
-        this.enemySpeed = 250;
+        this.enemySpeed = 70;
         // 
         this.isPassLevel = false;
         
         // khoảng thời gian cooldown giữa các lần kiểm tra vị trí của con quái cuối cùng
         this.checkCooldown = 3;
         this.checkCooldownCount = 0;
+        //
+        this.howManyBulletsCanKillEnemy = 4;
     },
 
     start () {
         // 
+        let currentLevel = cc.find("Canvas").getComponent("MainScene").level;
+        // 
+        this.displayTextNotifyForSwitchingToNewLevel(currentLevel);
+        // 
         this.moveToLevel(
-            cc.find("Canvas").getComponent("MainScene").level,
+            // cc.find("Canvas").getComponent("MainScene").level,
+            currentLevel,
             cc.find("Levels")._children[0].getComponent(`Level 1`)
         );
     },
 
     update(dt) {
+        // non show text drag to move
+        if (
+            cc.find("Canvas")._children[2].getComponent("Player").isStartGame 
+            && cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro
+            && cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active == true
+        ) {
+            // console.log('level', cc.find("Canvas").getComponent("MainScene").level)
+            // console.log('khong hien thi ne')
+
+            cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active = false;
+        }
+
         // when last enemy pass through bottom edge of screen
         this.checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt);
     }

@@ -7,12 +7,36 @@
       false,
       false,
       true,
-      false
+      false,
+      null,
+      null,
+      null,
+      true
     ],
     [
       false,
       true,
       false,
+      null,
+      true,
+      null,
+      null,
+      false
+    ],
+    [
+      false,
+      false,
+      false,
+      false,
+      true
+    ],
+    [
+      false,
+      false,
+      true,
+      true,
+      false,
+      null,
       null,
       true
     ],
@@ -21,13 +45,26 @@
       false,
       false,
       false,
-      true
+      false,
+      false
     ],
     [
       false,
       false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ],
+    [
+      false,
       true,
+      false,
+      false,
       true,
+      false,
+      false,
       false
     ]
   ],
@@ -37,7 +74,10 @@
     "bullet",
     "enemy",
     "items",
-    "player"
+    "player",
+    "level",
+    "backgr",
+    "boss"
   ],
   "start-scene": "34ab3e72-083e-42f8-a36d-9ab90654ef26",
   "design-resolution-width": 960,

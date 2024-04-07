@@ -136,7 +136,7 @@ cc.Class({
                 this.eachEnemyHitCount++;
 
                 // số viên đạn va vào quái mà có thể giết quái - enemy
-                if (this.eachEnemyHitCount < 3) {
+                if (this.eachEnemyHitCount < cc.find("Levels").getComponent("Levels").howManyBulletsCanKillEnemy) {
                     // 
                     this.effectExplosion(false);
                 } 

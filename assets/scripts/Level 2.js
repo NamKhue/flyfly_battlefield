@@ -11,8 +11,8 @@ cc.Class({
         // this.colTotal = 4;
         // this.typeOfEnemy = 10;
         
-        this.rowTotal = 7;
-        this.colTotal = 5;
+        this.rowTotal = 3;
+        this.colTotal = 7;
         this.typeOfEnemy = 10;
 
         this.killedEnemyTotal = this.rowTotal * this.colTotal * this.typeOfEnemy;
