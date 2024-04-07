@@ -15,6 +15,15 @@ cc.Class({
         explosionPrefab: cc.Prefab,
     },
 
+    initializeExplosionPool() {
+        this.explosionPool = new cc.NodePool();
+        const explosionAmount = 10;
+        for (let i = 0; i < explosionAmount; i++) {
+            const explosion = cc.instantiate(this.explosionPrefab);
+            this.explosionPool.put(explosion);
+        }
+    },
+
     initializeBulletPool() {
         // 
         this.bulletPool = new cc.NodePool();
@@ -38,7 +47,7 @@ cc.Class({
     onMouseDown(event) {
         // bắt đầu chơi
         // if (cc.find("Canvas").getComponent("MainScene").level == 1 && !this.isStartGame) {
-        if (!this.isStartGame) {
+        if (!this.isStartGame && this.isDisappearTextIntro) {
             this.isStartGame = true;
         }
 
@@ -155,6 +164,7 @@ cc.Class({
             const moveAction = cc.sequence(
                 cc.moveBy(duration, cc.v2(0, screenSize.height)),
                 cc.callFunc(() => {
+                    // return bullet to node pool
                     this.circleBulletPool.put(circleBullet);
                 })
             );
@@ -174,7 +184,7 @@ cc.Class({
                 bullet = cc.instantiate(this.bulletPrefabs[0]);
             }
 
-            // thêm đạn vào mainscene
+            // add bullet to canvas node
             this.node.parent.addChild(bullet);
 
             // change pos for each bullet
@@ -194,31 +204,15 @@ cc.Class({
                 .to(1, { scale: 1.5 } )
                 .start();
 
-            // if (i == 0 || i == 1 || i == 2) {
-            //     cc.tween(bullet)
-            //         .to(0, { position: cc.v2(this.node.position.x , this.node.position.y + 55) } )
-            //         .to(0, { position: cc.v2(this.node.position.x - 20 + i * 5, this.node.position.y + 55) } )
-            //         .start();
-            // }
-            // if (i == 4 || i == 5 || i == 6) {
-            //     cc.tween(bullet)
-            //         .to(0, { position: cc.v2(this.node.position.x, this.node.position.y + 55) } )
-            //         .to(0, { position: cc.v2(this.node.position.x - 5 + (i - 1) * 5, this.node.position.y + 55) } )
-            //         .start();
-            // }
-
             // lấy kích thước màn hình
             const screenSize = cc.winSize;
 
-            // tính toán thời gian di chuyển của đạn để đạt tới đỉnh màn hình
             const duration = screenSize.height / this.bulletMovingSpeed;
-            // const duration = this.bulletMovingSpeed;
 
             // tạo action di chuyển cho đạn
             const moveAction = cc.sequence(
                 cc.moveBy(duration, cc.v2(0, screenSize.height)),
                 cc.callFunc(() => {
-                    // return bullet to node pool
                     this.bulletPool.put(bullet);
                 })
             );
@@ -357,15 +351,6 @@ cc.Class({
             .start();
     },
 
-    initializeExplosionPool() {
-        this.explosionPool = new cc.NodePool();
-        const explosionAmount = 10;
-        for (let i = 0; i < explosionAmount; i++) {
-            const explosion = cc.instantiate(this.explosionPrefab);
-            this.explosionPool.put(explosion);
-        }
-    },
-
     onCollisionEnter(other, self) {
         if (other.node.name === 'enemy') {
             // console.log("va vao enemy");
@@ -374,6 +359,16 @@ cc.Class({
             // this.gameOver = true;
             this.collideEnemy = true;
         }
+        if (other.node.name === 'boss') {
+            console.log("va vao boss");
+
+            // stop game or reduce HP
+            // this.gameOver = true;
+            this.collideEnemy = true;
+        }
+    },
+
+    onCollisionStay(other, self) {
         if (other.node.name === 'boss') {
             console.log("va vao boss");
 
@@ -487,42 +482,6 @@ cc.Class({
             setTimeout(() => {
                 cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = false;
             }, 2000);
-
-            // //
-            // // player blinks
-            // //
-            // if (this.collideEnemyDelayTimeCount < this.collideEnemyDelayTime) this.collideEnemyDelayTimeCount += dt;
-            // console.log(this.collideEnemyDelayTimeCount * 1000);
-            // // if ()
-            // let oldWidth = this.node.width;
-            // let oldHeight = this.node.height;
-
-            // const animationClip = this.playerAnimationClip[1];
-            // const animation = this.node.getComponent(cc.Animation);
-
-            // animation.removeClip(animation.getClips()[0], true);
-            // this.node.width = 0;
-            // this.node.height = 0;
-            // setTimeout(() => {
-            //     animation.addClip(animationClip, animationClip.name);
-            //     animation.play(animationClip.name);
-
-            //     this.collideEnemyDelayTimeCount += dt;
-            //     console.log(this.collideEnemyDelayTimeCount * 1000);
-            // }, 100);
-
-            // setTimeout(() => {
-            //     this.collideEnemyDelayTimeCount += dt;
-            //     console.log(this.collideEnemyDelayTimeCount * 1000);
-
-            //     animation.removeClip(animation.getClips()[0], true);
-            //     this.node.width = 0;
-            //     this.node.height = 0;
-            // }, 300);
-            // setTimeout(() => {
-            //     animation.addClip(animationClip, animationClip.name);
-            //     animation.play(animationClip.name);
-            // }, 400);
 
             //
             // set back the moment player does not collide enemies

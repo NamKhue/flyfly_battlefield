@@ -5,23 +5,25 @@ cc.Class({
     },
 
     generateLevel() {
-        // const boss = cc.find("Canvas")._children[3];
-
-        this.node.setScale(.5);
+        // 
+        this.node.setScale(.4);
 
         const screenHeight = cc.winSize.height;
-        this.node.setPosition(0, screenHeight * 1 / 3);
+        this.node.setPosition(0, screenHeight * 1 / 6);
         this.originalPosition = this.node.position; // Lưu vị trí ban đầu của boss
 
         const spine = this.node.getComponent(sp.Skeleton);
 
         spine.setAnimation(0, 'idle_offset', false);
+        
         spine.setCompleteListener((trackEntry, loopCount) => {
             if (trackEntry.animation.name === 'idle_offset') {
                 this.moveDown();
-            } else if (trackEntry.animation.name === 'Attack 1_offset') {
+            }
+            else if (trackEntry.animation.name === 'Attack 1_offset') {
                 this.moveUp();
-            } else if (trackEntry.animation.name === 'Attack 2_offset') {
+            }
+            else if (trackEntry.animation.name === 'Attack 2_offset') {
                 this.moveUp();
             }
         });
@@ -55,18 +57,24 @@ cc.Class({
             cc.callFunc(() => {
                 const spine = this.node.getComponent(sp.Skeleton);
                 spine.setAnimation(0, 'idle_offset', false); // Thực hiện animation idle_offset
-
             }),
-
         );
 
         this.node.runAction(combinedAction);
     },
 
     onCollisionEnter(other, self) {
-        if (other.node.name == 'player' || other.node.name == 'bullet') {
-            // turn to color red
-            console.log('boss va cham voi dan duoc hoac nguoi choi')
+        if (other.node.name == 'player') {
+            console.log('boss va cham voi nguoi choi')
+        }
+        else if (other.node.name == 'bullet') {
+            console.log('boss va cham voi bullet')
+        }
+    },
+
+    onCollisionStay(other, self) {
+        if (other.node.name == 'player') {
+            console.log('boss van dang va cham voi nguoi choi')
         }
     },
 
@@ -75,8 +83,8 @@ cc.Class({
     onLoad () {},
 
     start () {
-
     },
 
-    // update (dt) {},
+    update (dt) {
+    },
 });

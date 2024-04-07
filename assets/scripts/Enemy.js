@@ -181,11 +181,45 @@ cc.Class({
         this.eachEnemyHitCount = 0;
         //
         this.isCreatingItem = false;
+        
+        // khoảng thời gian cooldown giữa các lần kiểm tra vị trí của con quái cuối cùng
+        this.checkCooldown = 1;
+        this.checkCooldownCount = 0;
     },
 
     start() {
+        // console.log(cc.find("Canvas")._children[2].getComponent("Player"))
+        // console.log(cc.find("Canvas")._children[2].getComponent("Player").collideEnemy)
+        // // console.log(cc.find("Canvas")._children[2].getComponent("Player").node.width)
+        // // console.log(cc.find("Canvas")._children[2].getComponent("Player").node.height)
     },
 
+    // check(dt) {
+    //     //
+    //     this.checkCooldownCount += dt;
+        
+    //     if (
+    //         this.checkCooldownCount >= this.checkCooldown
+    //     ) {
+    //         this.checkCooldownCount = 0;
+    //         if (
+    //             this.node.x + this.node.width / 2 < cc.find("Canvas")._children[2].getComponent("Player").node.x - cc.find("Canvas")._children[2].getComponent("Player").node.width / 2
+    //             || this.node.y + this.node.height / 2 < cc.find("Canvas")._children[2].getComponent("Player").node.y - cc.find("Canvas")._children[2].getComponent("Player").node.height / 2
+    //             || this.node.x - this.node.width / 2 > cc.find("Canvas")._children[2].getComponent("Player").node.x + cc.find("Canvas")._children[2].getComponent("Player").node.width / 2
+    //             || this.node.y - this.node.height / 2 > cc.find("Canvas")._children[2].getComponent("Player").node.y + cc.find("Canvas")._children[2].getComponent("Player").node.height / 2
+    //         ) {
+    //             cc.find("Canvas")._children[2].getComponent("Player").collideEnemy = false;
+    //             console.log("khong")
+    //         }
+    //         else {
+    //             cc.find("Canvas")._children[2].getComponent("Player").collideEnemy = true;
+    //             console.log("dang va cham")
+    //         }
+    //     }
+    // },
+
     update (dt) {
+        // // 
+        // this.check(dt);
     },
 });

@@ -18,8 +18,7 @@ cc.Class({
     },
 
     displayTextNotifyForSwitchingToNewLevel(currentLevel) {
-        // console.log('vao day')
-        
+        // 
         // console.log('currentLevel', currentLevel)
         // console.log('canvas node', cc.find("Canvas").getComponent("MainScene"))
         // console.log('text list', cc.find("Canvas").getComponent("MainScene").level_text)
@@ -46,8 +45,6 @@ cc.Class({
 
         // stop click/hold mouse event
         playerNodeFile.isClickingMouse = false;
-        // 
-        playerNodeFile.isDisappearTextIntro = false;
         playerNodeFile.isStartGame = false;
         
         cc.find("Canvas").off(cc.Node.EventType.TOUCH_START, playerNodeFile.onMouseDown, playerNodeFile);
@@ -80,6 +77,8 @@ cc.Class({
         //
         if (currentLevel < cc.find("Canvas").getComponent("MainScene").levelTotal + 1) {
             setTimeout(() => {
+                // 
+                cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro = false;
                 //
                 this.prepareForNewLevel();
                 //
@@ -103,6 +102,7 @@ cc.Class({
             // or when the last enemy pass edge of screen
             || this.isPassLevel
         ) {
+            //
             this.passLevel(currentLevel);
         }
     },
@@ -121,15 +121,18 @@ cc.Class({
             }
 
             let index = 0;
+            let timeDelay = 0;
             let x = currentNodeFile.node.position.x;
             let y = currentNodeFile.node.position.y;
             let angle = 0;
 
             if (i == 1) {
                 index = 9;
+                timeDelay = 10;
             }
             else if (i < 10) {
                 index = 4;
+                timeDelay = 5;
 
                 if (i >= 6) {
                     x = x - 105 + 30 * i;
@@ -142,6 +145,7 @@ cc.Class({
             }
             else if (i < 16) {
                 index = 5;
+                timeDelay = -10;
 
                 if (i >= 13) {
                     x = x + 355 - 20 * i;
@@ -169,6 +173,7 @@ cc.Class({
             }
             else if (i < 32) {
                 index = 6;
+                timeDelay = -5;
 
                 if (i >= 28) {
                     angle = 2.55 + i / 9 - 8 / 9;
@@ -183,6 +188,7 @@ cc.Class({
             }
             else if (i < 40) {
                 index = 3;
+                timeDelay = 2;
 
                 angle = 2.55 + i / 9 - 16 / 9;
                 x = x + 175 * Math.cos(angle);
@@ -197,10 +203,21 @@ cc.Class({
             animation.addClip(animationClip, animationClip.name);
             animation.play(animationClip.name);
 
-            enemy.setPosition(x, y + 200);
+            // enemy.setPosition(x, y + 200);
+            enemy.setPosition(x, y + 600);
 
             // thêm prefab enemy vào scene
             cc.find("Canvas").addChild(enemy);
+
+            // vận tốc
+            const speed = this.enemySpeed;
+            const duration = (35 + timeDelay) / speed;
+
+            const moveAction = cc.sequence(
+                cc.moveTo(duration, cc.v2(x, y + 200)),
+                cc.callFunc(() => {})
+            );
+            enemy.runAction(moveAction);
         }
     },
 
@@ -317,6 +334,20 @@ cc.Class({
         }
     },
 
+    nonShowLevelText() {
+        //
+        if (
+            cc.find("Canvas")._children[2].getComponent("Player").isStartGame 
+            && cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro
+            && cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active == true
+        ) {
+            // console.log('level', cc.find("Canvas").getComponent("MainScene").level)
+            // console.log('khong hien thi ne')
+
+            cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active = false;
+        }
+    },
+
     // LIFE-CYCLE CALLBACKS:
 
     onLoad () {
@@ -348,17 +379,8 @@ cc.Class({
     },
 
     update(dt) {
-        // non show text drag to move
-        if (
-            cc.find("Canvas")._children[2].getComponent("Player").isStartGame 
-            && cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro
-            && cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active == true
-        ) {
-            // console.log('level', cc.find("Canvas").getComponent("MainScene").level)
-            // console.log('khong hien thi ne')
-
-            cc.find("Canvas").getComponent("MainScene").level_text[cc.find("Canvas").getComponent("MainScene").level - 1].active = false;
-        }
+        // non show text switch level
+        this.nonShowLevelText();
 
         // when last enemy pass through bottom edge of screen
         this.checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt);
