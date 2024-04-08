@@ -101,12 +101,12 @@ cc.Class({
 
     shoot() {
         // 
-        if (!this.isStartGame || this.gameOver) {
+        if (!this.isStartGame || this.isGameOver) {
             return;
         }
         // sound for shooting
         const bulletSound = cc.audioEngine.playEffect(this.bulletAudio, false);
-        cc.audioEngine.setVolume(bulletSound, 0.2);
+        cc.audioEngine.setVolume(bulletSound, 0.3);
         // 
         // change amount of bullets here
         this.initializeGun();
@@ -114,14 +114,12 @@ cc.Class({
 
     shootWithDelayTime(dt) {
         // 
-        if (this.isInIdealPos) {
-            //
-            this.shootCooldownCount += dt;
-            //
-            if (this.shootCooldownCount >= this.shootCooldown) {
-                this.shoot();
-                this.shootCooldownCount = 0;
-            }
+        //
+        this.shootCooldownCount += dt;
+        //
+        if (this.shootCooldownCount >= this.shootCooldown) {
+            this.shoot();
+            this.shootCooldownCount = 0;
         }
     },
 
@@ -367,10 +365,8 @@ cc.Class({
 
     movingEffectIntro() {
         // 
-        this.isDoneMovingEffectIntro = true;
-        // 
         cc.tween(this.node)
-            .to(1, { position: cc.v2(this.posX, this.posY), easing: 'cubicOut' })
+            .to(1, { position: cc.v2(this.posX, this.posY) })
             .start();
     },
 
@@ -410,24 +406,6 @@ cc.Class({
         }
     },
 
-    nonShowTextDragToMove() {
-        if (
-            this.isStartGame 
-            && this.isDisappearTextIntro
-            && cc.find("Canvas").getComponent("MainScene").textDragToMove.active == true
-        ) {
-            cc.find("Canvas").getComponent("MainScene").textDragToMove.active = false;
-        }
-
-        // when game is over
-        if (cc.find("Canvas").getComponent("MainScene").gameOver == true) {
-            // 
-            this.gameOver = true;
-            // 
-            this.un_registerMouseEvents();
-        }
-    },
-
     collideEnemy(dt) {
         //
         if (this.isBlinking) {
@@ -461,14 +439,12 @@ cc.Class({
             // console.log("va vao enemy");
 
             // stop game or reduce HP
-            // this.gameOver = true;
             this.isCollideEnemy = true;
         }
         if (other.node.name === 'boss') {
             console.log("va vao boss");
 
             // stop game or reduce HP
-            // this.gameOver = true;
             this.isCollideEnemy = true;
         }
     },
@@ -478,7 +454,7 @@ cc.Class({
             console.log("va vao boss");
 
             // stop game or reduce HP
-            // this.gameOver = true;
+            // this.isGameOver = true;
             this.isCollideEnemy = true;
         }
     },
@@ -512,8 +488,10 @@ cc.Class({
         // 
         this.initializeExplosionPool();
         // 
+        this.isClickToPlay = false;
         this.isStartGame = false;
-        this.gameOver = false;
+        this.isEndLevel = false;
+        this.isGameOver = false;
         //
         this.isClickingMouse = false;
         //
@@ -551,17 +529,31 @@ cc.Class({
     onLoad() {
         // 
         this.initializePlayer();
-
-        // register mouse event
-        this.registerMouseEvents();
     },
 
     start() {
     },
 
     update(dt) {
-        // when player is set in the idealest position for playing
-        if (this.node.y == this.posY) {
+        if (this.isClickToPlay) {
+            // 
+            this.isStartGame = true;
+            this.isClickingMouse = false;
+            // 
+            // movingEffectIntro'
+            if (cc.find("Canvas").getComponent("MainScene").level > 1) {
+                this.node.setPosition(this.posX, this.posY);
+            }
+            else {
+                this.movingEffectIntro();
+            }
+            // 
+            // register mouse event
+            this.registerMouseEvents();
+        }
+
+        // when player is successfully set in the idealest position for playing
+        if (this.node.y == this.posY && !this.isInIdealPos) {
             // 
             this.isInIdealPos = true;
             // 
@@ -569,19 +561,12 @@ cc.Class({
         }
 
         // when click mouse
-        if (this.isClickingMouse) {
-
-            // movingEffectIntro
-            if (!this.isDoneMovingEffectIntro) {
-                this.movingEffectIntro();
+        if (this.isStartGame) {
+            if (this.isClickingMouse) {
+                // shoot cooldown
+                this.shootWithDelayTime(dt);
             }
-
-            // shoot cooldown
-            this.shootWithDelayTime(dt);
         }
-
-        // non show text drag to move
-        this.nonShowTextDragToMove();
 
         // when player collides enemies
         this.collideEnemy(dt);

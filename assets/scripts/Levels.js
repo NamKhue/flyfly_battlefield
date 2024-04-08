@@ -17,59 +17,48 @@ cc.Class({
         }
     },
 
-    displayTextNotifyForSwitchingToNewLevel(currentLevel) {
-        // text noti switch to new level
-        cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = true;
-    },
-
-    whenPassLevel() {
-        // 
-        this.isPassLevel = false;
+    whenPassLevel(currentLevel) {
         // 
         // player
         const playerNode = cc.find("Canvas")._children[2];
         const playerNodeFile = cc.find("Canvas")._children[2].getComponent("Player");
-
-        // set pos
+        //
         cc.tween(playerNode)
-            .to(1, { position: cc.v2(playerNodeFile.posX, playerNodeFile.posY), easing: 'cubicOut' })
+            .to(1, { 
+                // disappear
+                opacity: 0
+            })
             .start();
-
         // stop click/hold mouse event
         playerNodeFile.isClickingMouse = false;
         playerNodeFile.isStartGame = false;
+        playerNodeFile.isEndLevel = true;
         playerNodeFile.isDisappearTextIntro = false;
+        playerNodeFile.isDoneMovingEffectIntro = false;
+
+        // canvas
+        const canvasNode = cc.find("Canvas");
+        const canvasNodeFile = canvasNode.getComponent("MainScene");
+        //
+        if (currentLevel > canvasNodeFile.levelTotal) { 
+            canvasNodeFile.isGameOver = true;
+        }
+        // 
+        canvasNodeFile.level += 1;
+        setTimeout(() => {
+            canvasNodeFile.introGame();
+        }, 1000);
     },
 
     passLevel(currentLevel) {
+        // 
+        this.isPassLevel = false;
+        // 
         // increase level
         console.log(`xong level ${currentLevel}`);
         currentLevel += 1;
-        cc.find("Canvas").getComponent("MainScene").level += 1;
         //
-        this.displayTextNotifyForSwitchingToNewLevel(currentLevel);
-        //
-        this.whenPassLevel();
-        //
-        if (currentLevel <= cc.find("Canvas").getComponent("MainScene").levelTotal) {
-            // sol 1
-            // auto enter new level
-            // setTimeout(() => {
-            //     // 
-            //     cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro = false;
-            //     //
-            //     this.prepareForNewLevel();
-            //     //
-            //     this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
-            //     //
-            //     cc.find("Canvas").getComponent("MainScene").gameOver = false;
-            //     // 
-            //     cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = false;
-            // }, 3000);   
-        }
-        else {
-            cc.find("Canvas").getComponent("MainScene").gameOver = true;
-        }
+        this.whenPassLevel(currentLevel);
     },
 
     checkForChangingLevel(currentLevel, currentNodeFile) {
@@ -286,30 +275,27 @@ cc.Class({
         // non auto enter
         // need player click mouse to start new level
         //
-        let currentLevel = cc.find("Canvas").getComponent("MainScene").level;
-        //
-        this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
-        // 
-        cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = false;
-    },
-
-    nonShowLevelText() {
-        let currentLevel = cc.find("Canvas").getComponent("MainScene").level;
-        //
         if (
-            cc.find("Canvas")._children[2].getComponent("Player").isClickingMouse 
-            && cc.find("Canvas")._children[2].getComponent("Player").isStartGame 
-            && cc.find("Canvas")._children[2].getComponent("Player").isDisappearTextIntro
-            && cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active == true
+            cc.find("Canvas")._children[2].getComponent("Player").isClickToPlay
         ) {
             // 
-            setTimeout(() => {}, 2000);
-
+            cc.find("Canvas")._children[2].getComponent("Player").isClickToPlay = false;
             // 
+            // setTimeout(() => {}, 2000);
+            //
+            let currentLevel = cc.find("Canvas").getComponent("MainScene").level;
+            // text level ...
             cc.find("Canvas").getComponent("MainScene").level_text[currentLevel - 1].active = false;
-
-            // clickToStartGameWithNewLevel
-            this.clickToStartGameWithNewLevel();
+            // 
+            // player
+            const playerNode = cc.find("Canvas")._children[2];
+            const playerNodeFile = playerNode.getComponent("Player");
+            
+            playerNodeFile.node.setPosition(playerNodeFile.posX, playerNodeFile.posY);
+            playerNodeFile.node.opacity = 255;
+            playerNodeFile.isEndLevel = false;
+            //
+            this.moveToLevel(currentLevel, cc.find("Levels")._children[currentLevel - 1].getComponent(`Level ${currentLevel}`));
         }
     },
 
@@ -365,15 +351,11 @@ cc.Class({
     },
 
     start () {
-        // 
-        let currentLevel = cc.find("Canvas").getComponent("MainScene").level;
-        // 
-        this.displayTextNotifyForSwitchingToNewLevel(currentLevel);
     },
 
     update(dt) {
         // non show text switch level
-        this.nonShowLevelText();
+        this.clickToStartGameWithNewLevel();
 
         // when last enemy pass through bottom edge of screen
         this.checkTheLastEnemyPassThroughBottomEdgeOfScreen(dt);

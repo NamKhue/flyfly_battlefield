@@ -126,7 +126,7 @@ cc.Class({
     },
 
     onCollisionEnter(other, self) {
-        if (cc.find("Canvas").getComponent("MainScene").gameOver == false) {
+        if (cc.find("Canvas").getComponent("MainScene").isGameOver == false) {
             // 
             if (
                 other.node.name === 'bullet' 
