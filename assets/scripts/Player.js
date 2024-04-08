@@ -45,32 +45,21 @@ cc.Class({
     },
 
     onMouseDown(event) {
-        // bắt đầu chơi
-        // if (cc.find("Canvas").getComponent("MainScene").level == 1 && !this.isStartGame) {
-        if (!this.isStartGame && this.isDisappearTextIntro) {
-            this.isStartGame = true;
-        }
-
-        // Lấy vị trí chuột trong không gian world
-        const mousePos = event.getLocation();
-
-        // Chuyển đổi vị trí chuột thành vị trí trong không gian local của khẩu súng
-        const localPos = this.node.parent.convertToNodeSpaceAR(mousePos);
-
-        // Di chuyển khẩu súng tới vị trí chuột
-        this.node.position = localPos;
-
         // người chơi đang click
         this.isClickingMouse = true;
-
-        // this.schedule(this.shoot, this.shootCooldown);
+        //
+        if (!this.isStartGame) {
+            this.isStartGame = true;
+        }
+        //
+        if (!this.isDisappearTextIntro) {
+            this.isDisappearTextIntro = true;
+        }
     },
 
     onMouseUp(event) {
         // người chơi khong còn click
         this.isClickingMouse = false;
-
-        // this.unschedule(this.shoot);
     },
 
     onMouseMove(event) {
@@ -87,6 +76,9 @@ cc.Class({
     registerMouseEvents() {
         cc.find("Canvas").on(cc.Node.EventType.TOUCH_START, this.onMouseDown, this);
         cc.find("Canvas").on(cc.Node.EventType.TOUCH_END, this.onMouseUp, this);
+    },
+
+    registerMouseMoveEvent() {
         cc.find("Canvas").on(cc.Node.EventType.TOUCH_MOVE, this.onMouseMove, this);
     },
 
@@ -96,11 +88,23 @@ cc.Class({
         cc.find("Canvas").off(cc.Node.EventType.TOUCH_MOVE, this.onMouseMove, this);
     },
 
+    registerGun() {
+        // Lấy vị trí chuột trong không gian world
+        const mousePos = event.getLocation();
+
+        // Chuyển đổi vị trí chuột thành vị trí trong không gian local của khẩu súng
+        const localPos = this.node.parent.convertToNodeSpaceAR(mousePos);
+
+        // Di chuyển khẩu súng tới vị trí chuột
+        this.node.position = localPos;
+    },
+
     shoot() {
-        if (!this.isClickingMouse || this.gameOver) {
+        // 
+        if (!this.isStartGame || this.gameOver) {
             return;
         }
-        // 
+        // sound for shooting
         const bulletSound = cc.audioEngine.playEffect(this.bulletAudio, false);
         cc.audioEngine.setVolume(bulletSound, 0.2);
         // 
@@ -108,7 +112,21 @@ cc.Class({
         this.initializeGun();
     },
 
+    shootWithDelayTime(dt) {
+        // 
+        if (this.isInIdealPos) {
+            //
+            this.shootCooldownCount += dt;
+            //
+            if (this.shootCooldownCount >= this.shootCooldown) {
+                this.shoot();
+                this.shootCooldownCount = 0;
+            }
+        }
+    },
+
     initializeGun() {
+        // 
         if (!this.upgradeGun[0]) {
             this.normalGun();
         }
@@ -345,11 +363,98 @@ cc.Class({
     initializePlayerPos() {
         // 
         this.node.setPosition(cc.v2(this.posX, this.posY - 500));
+    },
 
+    movingEffectIntro() {
+        // 
+        this.isDoneMovingEffectIntro = true;
+        // 
         cc.tween(this.node)
             .to(1, { position: cc.v2(this.posX, this.posY), easing: 'cubicOut' })
             .start();
     },
+
+    blinkPlayerWhenCollideEnemy(dt) {
+        //
+        if (this.collideEnemyDelayTimeCount == 0) {
+            this.canBlink = true;
+            this.isBlinking = true;
+        }
+        this.collideEnemyDelayTimeCount += dt;
+        //
+        if (this.collideEnemyDelayTimeCount >= this.collideEnemyDelayTime) {
+            // console.log('reset');
+            //
+            this.collideEnemyDelayTimeCount = 0;
+            //
+            this.canBlink = false;
+            this.isBlinking = false;
+        }
+        //
+        if (this.canBlink) {
+            // console.log('o day nay');
+            //
+            this.canBlink = false;
+            //
+            this.node.opacity = 0;
+            setTimeout(() => {
+                this.node.opacity = 255;
+            }, 100);
+            //
+            setTimeout(() => {
+                this.node.opacity = 0;
+                setTimeout(() => {
+                    this.node.opacity = 255;
+                }, 100);
+            }, 200);
+        }
+    },
+
+    nonShowTextDragToMove() {
+        if (
+            this.isStartGame 
+            && this.isDisappearTextIntro
+            && cc.find("Canvas").getComponent("MainScene").textDragToMove.active == true
+        ) {
+            cc.find("Canvas").getComponent("MainScene").textDragToMove.active = false;
+        }
+
+        // when game is over
+        if (cc.find("Canvas").getComponent("MainScene").gameOver == true) {
+            // 
+            this.gameOver = true;
+            // 
+            this.un_registerMouseEvents();
+        }
+    },
+
+    collideEnemy(dt) {
+        //
+        if (this.isBlinking) {
+            //
+            this.collideEnemyDelayTimeCount += dt;
+        }
+        //
+        if (this.isCollideEnemy == true) {
+            // console.log('dang va cham day');
+
+            // 
+            this.blinkPlayerWhenCollideEnemy(dt);
+
+            // lose blood blinks
+            cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = true;
+            setTimeout(() => {
+                cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = false;
+            }, 2000);
+
+            //
+            // set back the moment player does not collide enemies
+            this.isCollideEnemy = false;
+            // console.log('het va cham doi');
+        }
+    },
+
+    // ===============================================================================================================
 
     onCollisionEnter(other, self) {
         if (other.node.name === 'enemy') {
@@ -357,14 +462,14 @@ cc.Class({
 
             // stop game or reduce HP
             // this.gameOver = true;
-            this.collideEnemy = true;
+            this.isCollideEnemy = true;
         }
         if (other.node.name === 'boss') {
             console.log("va vao boss");
 
             // stop game or reduce HP
             // this.gameOver = true;
-            this.collideEnemy = true;
+            this.isCollideEnemy = true;
         }
     },
 
@@ -374,9 +479,11 @@ cc.Class({
 
             // stop game or reduce HP
             // this.gameOver = true;
-            this.collideEnemy = true;
+            this.isCollideEnemy = true;
         }
     },
+
+    // ===============================================================================================================
 
     initializePlayer() {
         // // type of power
@@ -407,7 +514,11 @@ cc.Class({
         // 
         this.isStartGame = false;
         this.gameOver = false;
+        //
         this.isClickingMouse = false;
+        //
+        this.isInIdealPos = false;
+        //
         this.isDisappearTextIntro = false;
         // 
         // bool  update or not
@@ -415,9 +526,11 @@ cc.Class({
         this.upgradeGun = [false, false];
         // 
         this.canShoot = true;
-        this.collideEnemy = false;
-        // this.collideEnemyDelayTime = 500;
-        // this.collideEnemyDelayTimeCount = 0;
+        this.isCollideEnemy = false;
+        this.collideEnemyDelayTime = .8;
+        this.collideEnemyDelayTimeCount = 0;
+        this.canBlink = false;
+        this.isBlinking = false;
         //
         this.playerSpeed = 100;
 
@@ -430,63 +543,47 @@ cc.Class({
 
         // boolean - player have owned magnet item yet
         // this.ownMagnetItem = true;
+
+        // movingEffectIntro
+        this.isDoneMovingEffectIntro = false;
     },
 
     onLoad() {
         // 
         this.initializePlayer();
+
+        // register mouse event
+        this.registerMouseEvents();
     },
 
     start() {
     },
 
     update(dt) {
-        // shoot cooldown
-        if (this.isClickingMouse) {
-            this.shootCooldownCount += dt;
-            
-            if (this.shootCooldownCount >= this.shootCooldown) {
-                this.shoot();
-                this.shootCooldownCount = 0;
-            }
+        // when player is set in the idealest position for playing
+        if (this.node.y == this.posY) {
+            // 
+            this.isInIdealPos = true;
+            // 
+            this.registerMouseMoveEvent();
         }
 
-        // register mouse event
-        if (this.node.y == this.posY && !this.isDisappearTextIntro) {
-            this.isDisappearTextIntro = true;
-            this.registerMouseEvents();
+        // when click mouse
+        if (this.isClickingMouse) {
+
+            // movingEffectIntro
+            if (!this.isDoneMovingEffectIntro) {
+                this.movingEffectIntro();
+            }
+
+            // shoot cooldown
+            this.shootWithDelayTime(dt);
         }
 
         // non show text drag to move
-        if (
-            this.isStartGame 
-            && this.isDisappearTextIntro
-            && cc.find("Canvas").getComponent("MainScene").textDragToMove.active == true
-        ) {
-            cc.find("Canvas").getComponent("MainScene").textDragToMove.active = false;
-        }
-
-        // when game is over
-        if (cc.find("Canvas").getComponent("MainScene").gameOver == true) {
-            // 
-            this.gameOver = true;
-            // 
-            this.un_registerMouseEvents();
-        }
+        this.nonShowTextDragToMove();
 
         // when player collides enemies
-        if (this.collideEnemy == true) {
-            //
-            // lose blood blinks
-            cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = true;
-            setTimeout(() => {
-                cc.find("Canvas").getComponent("MainScene").loseBloodBG.active = false;
-            }, 2000);
-
-            //
-            // set back the moment player does not collide enemies
-            this.collideEnemy = false;
-            // console.log('het va cham doi');
-        }
+        this.collideEnemy(dt);
     },
 });
