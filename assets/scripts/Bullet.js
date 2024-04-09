@@ -66,7 +66,7 @@ cc.Class({
 
     update (dt) {
         // when switch to new level
-        if (cc.find("Levels").getComponent("Levels").isPassLevel) {
+        if (cc.find("Canvas")._children[2].getComponent("Player").isEndLevel) {
             this.node.destroy();
         }
 
